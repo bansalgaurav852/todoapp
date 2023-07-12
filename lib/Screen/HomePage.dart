@@ -111,9 +111,8 @@ class _HomePageState extends State<HomePage> {
                                         description: data.description,
                                         complete: true,
                                         createdate: DateTime.now(),
-                                        duedate: state.selecteddate ??
-                                            DateTime.now(),
-                                        priority: state.priority!);
+                                        duedate: data.duedate,
+                                        priority: data.priority);
                                     context.read<TodoBloc>().add(
                                         UpdateTodoEvent(
                                             key: key,
