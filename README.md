@@ -16,4 +16,7 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 run below command to generate or update todoModel.g.dart after doing changes in todoModel.dart
+
+```dart
 flutter packages pub run build_runner build
+```
