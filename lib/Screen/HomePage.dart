@@ -4,6 +4,8 @@ import 'package:todoapp/bloc/todo_bloc.dart';
 import 'package:todoapp/helper/utils.dart';
 import 'package:todoapp/model/todoModel.dart';
 
+import 'package:timezone/data/latest.dart' as tz;
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -21,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     context.read<TodoBloc>().add(Initilizedata());
+    tz.initializeTimeZones();
     super.initState();
   }
 
@@ -105,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                                     context
                                         .read<TodoBloc>()
                                         .add(DeleteTodoEvent(key: key));
-                                  } else {
+                                  } else if (value.compareTo("Complted") == 0) {
                                     DataModel updateddata = DataModel(
                                         title: data.title,
                                         description: data.description,
@@ -117,11 +120,22 @@ class _HomePageState extends State<HomePage> {
                                         UpdateTodoEvent(
                                             key: key,
                                             updateddata: updateddata));
+                                  } else if (value.compareTo('Set Reminder') ==
+                                      0) {
+                                    context.read<TodoBloc>().add(
+                                        SetReminderEvent(
+                                            key: key,
+                                            data: data,
+                                            context: context));
                                   }
                                 },
                                 itemBuilder: (BuildContext context) {
-                                  return ["Edit", "Delete", "Completed"]
-                                      .map((option) {
+                                  return [
+                                    "Edit",
+                                    "Delete",
+                                    "Completed",
+                                    "Set Reminder"
+                                  ].map((option) {
                                     return PopupMenuItem(
                                       value: option,
                                       child: Text(option),
@@ -151,127 +165,133 @@ class _HomePageState extends State<HomePage> {
                   builder: (context, state) {
                     return Form(
                       key: _formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          TextFormField(
-                            decoration:
-                                const InputDecoration(hintText: "Title"),
-                            controller: titleController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter Title";
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          TextFormField(
-                            decoration:
-                                const InputDecoration(hintText: "Description"),
-                            controller: descriptionController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter Description";
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: GestureDetector(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            TextFormField(
+                              decoration:
+                                  const InputDecoration(hintText: "Title"),
+                              controller: titleController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Enter Title";
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                  hintText: "Description"),
+                              controller: descriptionController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Enter Description";
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      context
+                                          .read<TodoBloc>()
+                                          .add(DueDateEvent(context: context));
+                                    },
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                          border: Border(
+                                              bottom: BorderSide(
+                                                  color: Colors.black))),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 12),
+                                      child: Text(state.selecteddate == null
+                                          ? "Select Date"
+                                          : Utils.dateformat(
+                                              state.selecteddate!)),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            DropdownButton<String>(
+                              hint: const Text("Priority"),
+                              isExpanded: true,
+                              value: state.priority,
+                              elevation: 16,
+                              underline: DropdownButtonHideUnderline(
+                                child: Container(),
+                              ),
+                              onChanged: (String? newValue) {},
+                              items: <String>[
+                                'Low',
+                                'High'
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
                                   onTap: () {
                                     context
                                         .read<TodoBloc>()
-                                        .add(DueDateEvent(context: context));
+                                        .add(PriorityEvent(priority: value));
                                   },
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                        border: Border(
-                                            bottom: BorderSide(
-                                                color: Colors.black))),
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12),
-                                    child: Text(state.selecteddate == null
-                                        ? "Select Date"
-                                        : Utils.dateformat(
-                                            state.selecteddate!)),
-                                  ),
-                                ),
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                            const SizedBox(height: 8),
+                            ElevatedButton(
+                              child: Text(
+                                key == null ? "Add task" : "Update task",
+                                style: const TextStyle(color: Colors.white),
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          DropdownButton<String>(
-                            hint: const Text("Priority"),
-                            isExpanded: true,
-                            value: state.priority,
-                            elevation: 16,
-                            underline: DropdownButtonHideUnderline(
-                              child: Container(),
-                            ),
-                            onChanged: (String? newValue) {},
-                            items: <String>['Low', 'High']
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                onTap: () {
-                                  context
-                                      .read<TodoBloc>()
-                                      .add(PriorityEvent(priority: value));
-                                },
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                          const SizedBox(height: 8),
-                          ElevatedButton(
-                            child: Text(
-                              key == null ? "Add task" : "Update task",
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                            onPressed: () {
-                              if (_formKey.currentState!.validate() &&
-                                  state.priority != null &&
-                                  state.selecteddate != null) {
-                                final String title = titleController.text;
+                              onPressed: () {
+                                if (_formKey.currentState!.validate() &&
+                                    state.priority != null &&
+                                    state.selecteddate != null) {
+                                  final String title = titleController.text;
 
-                                final String description =
-                                    descriptionController.text;
-                                titleController.clear();
-                                descriptionController.clear();
-                                DataModel data = DataModel(
-                                    title: title,
-                                    description: description,
-                                    complete: false,
-                                    createdate: DateTime.now(),
-                                    duedate: state.selecteddate!,
-                                    priority: state.priority!);
-                                if (key == null) {
-                                  context
-                                      .read<TodoBloc>()
-                                      .add(AddTodoEvent(data: data));
-                                } else {
-                                  context.read<TodoBloc>().add(UpdateTodoEvent(
-                                      key: key, updateddata: data));
+                                  final String description =
+                                      descriptionController.text;
+                                  titleController.clear();
+                                  descriptionController.clear();
+                                  DataModel data = DataModel(
+                                      title: title,
+                                      description: description,
+                                      complete: false,
+                                      createdate: DateTime.now(),
+                                      duedate: state.selecteddate!,
+                                      priority: state.priority!);
+                                  if (key == null) {
+                                    context
+                                        .read<TodoBloc>()
+                                        .add(AddTodoEvent(data: data));
+                                  } else {
+                                    context.read<TodoBloc>().add(
+                                        UpdateTodoEvent(
+                                            key: key, updateddata: data));
+                                  }
+
+                                  Navigator.pop(context);
+                                } else if (state.selecteddate == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text("Select Date")));
+                                } else if (state.priority == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text("Set priority")));
                                 }
-                                Navigator.pop(context);
-                              } else if (state.selecteddate == null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text("Select Date")));
-                              } else if (state.priority == null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text("Set priority")));
-                              }
-                            },
-                          )
-                        ],
+                              },
+                            )
+                          ],
+                        ),
                       ),
                     );
                   },

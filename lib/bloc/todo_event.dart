@@ -49,3 +49,14 @@ class UpdateTodoEvent extends TodoEvent {
     required this.updateddata,
   });
 }
+
+class SetReminderEvent extends TodoEvent {
+  final int key;
+  final DataModel data;
+  final BuildContext context;
+  SetReminderEvent({
+    required this.key,
+    required this.data,
+    required this.context,
+  });
+}
