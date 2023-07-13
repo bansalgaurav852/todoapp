@@ -33,9 +33,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => TodoBloc(),
-      child: const MaterialApp(
+      child: MaterialApp(
+        theme: ThemeData.light(),
+        debugShowCheckedModeBanner: false,
         title: 'Material App',
-        home: HomePage(),
+        home: const HomePage(),
       ),
     );
   }

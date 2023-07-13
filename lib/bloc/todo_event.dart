@@ -60,3 +60,11 @@ class SetReminderEvent extends TodoEvent {
     required this.context,
   });
 }
+
+class SetSelectedSortingEvent extends TodoEvent {
+  final int index;
+
+  SetSelectedSortingEvent({required this.index});
+}
+
+class SortListBySectedType extends TodoEvent {}

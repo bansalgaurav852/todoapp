@@ -80,6 +80,54 @@ class TodoBloc extends Bloc<TodoEvent, TodoInitial> {
         emit(state.copyWith(selecteddate: dateTime));
       }
     });
+    on<SetSelectedSortingEvent>((event, emit) async {
+      emit(state.copyWith(selectedSorting: event.index));
+    });
+    on<SortListBySectedType>((event, emit) async {
+      sortinglistbyselection();
+    });
+  }
+  void sortinglistbyselection() {
+    /* "due date:from newsest",
+    "due date:from oldest",
+    "priority:Low",
+    "priority:High",
+    "Creation date:from newsest",
+    "Creation date:from oldest",*/
+    List<DataModel> list = state.dataBox!.values.toList();
+    if (state.selectedSorting == 0) {
+      list.sort((a, b) => a.duedate.compareTo(b.duedate));
+    } else if (state.selectedSorting == 1) {
+      list.sort((a, b) => b.duedate.compareTo(a.duedate));
+    } else if (state.selectedSorting == 2) {
+      List low = [];
+      List high = [];
+      for (int i = 0; i < list.length; i++) {
+        if (list[i].priority == "Low") {
+          low.add(list[i]);
+        } else {
+          high.add(list[i]);
+        }
+      }
+      list = [...low, ...high];
+    } else if (state.selectedSorting == 3) {
+      List low = [];
+      List high = [];
+      for (int i = 0; i < list.length; i++) {
+        if (list[i].priority == "Low") {
+          low.add(list[i]);
+        } else {
+          high.add(list[i]);
+        }
+      }
+      list = [...high, ...low];
+    } else if (state.selectedSorting == 4) {
+      list.sort((a, b) => a.createdate.compareTo(b.createdate));
+    } else if (state.selectedSorting == 5) {
+      list.sort((a, b) => b.duedate.compareTo(a.duedate));
+    }
+
+    emit(state.copyWith(datalist: list));
   }
 
   Future<DateTime?> getselectedDateTime({required BuildContext context}) async {

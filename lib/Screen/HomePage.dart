@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todoapp/bloc/todo_bloc.dart';
@@ -44,10 +45,13 @@ class _HomePageState extends State<HomePage> {
         var items = state.datalist;
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 8),
+          decoration: const BoxDecoration(color: Colors.black12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const SizedBox(height: 12),
               SearchBar(
+                elevation: MaterialStateProperty.all(0),
                 controller: searchController,
                 hintText: "Search",
                 onChanged: (value) {
@@ -58,7 +62,7 @@ class _HomePageState extends State<HomePage> {
               ),
               Expanded(
                 child: items.isEmpty
-                    ? const Text("Empty")
+                    ? const Center(child: Text("Empty"))
                     : ListView.separated(
                         separatorBuilder: (_, index) => const Divider(),
                         itemCount: items.length,
@@ -108,12 +112,13 @@ class _HomePageState extends State<HomePage> {
                                     context
                                         .read<TodoBloc>()
                                         .add(DeleteTodoEvent(key: key));
-                                  } else if (value.compareTo("Complted") == 0) {
+                                  } else if (value.compareTo("Completed") ==
+                                      0) {
                                     DataModel updateddata = DataModel(
                                         title: data.title,
                                         description: data.description,
                                         complete: true,
-                                        createdate: DateTime.now(),
+                                        createdate: data.createdate,
                                         duedate: data.duedate,
                                         priority: data.priority);
                                     context.read<TodoBloc>().add(
@@ -299,12 +304,78 @@ class _HomePageState extends State<HomePage> {
         context: context);
   }
 
+  List sortingchoice = [
+    "due date:from newsest",
+    "due date:from oldest",
+    "priority:Low",
+    "priority:High",
+    "Creation date:from newsest",
+    "Creation date:from oldest",
+  ];
   AppBar customappbar() {
+    List<Map<String, dynamic>> list =
+        List.generate(sortingchoice.length, (index) {
+      return {"key": sortingchoice[index], "index": index};
+    });
     return AppBar(
       automaticallyImplyLeading: false,
-      backgroundColor: Colors.black,
       title: const Text("TODO App"),
-      actions: const <Widget>[],
+      actions: <Widget>[
+        TextButton(
+            onPressed: () {
+              showDialog(
+                  builder: (context) => AlertDialog(
+                        contentPadding: EdgeInsets.zero,
+                        backgroundColor: const Color.fromRGBO(207, 216, 220, 1),
+                        title: const Text("Sort by"),
+                        content: Container(
+                          padding: const EdgeInsets.all(16),
+                          child: BlocBuilder<TodoBloc, TodoState>(
+                            builder: (context, state) {
+                              if (kDebugMode) print(state.selectedSorting);
+                              return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: list
+                                      .map((e) => RadioListTile(
+                                            title: Text(e['key'].toString()),
+                                            value: e['index'] as int,
+                                            groupValue:
+                                                state.selectedSorting ?? 0,
+                                            onChanged: (value) {
+                                              context.read<TodoBloc>().add(
+                                                    SetSelectedSortingEvent(
+                                                      index: e['index'] as int,
+                                                    ),
+                                                  );
+                                            },
+                                          ))
+                                      .toList());
+                            },
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text("CANCEL")),
+                          TextButton(
+                              onPressed: () {
+                                context
+                                    .read<TodoBloc>()
+                                    .add(SortListBySectedType());
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text("SORT"))
+                        ],
+                      ),
+                  context: context);
+            },
+            child: const Text(
+              "SORT",
+              style: TextStyle(color: Colors.white),
+            ))
+      ],
     );
   }
 }
