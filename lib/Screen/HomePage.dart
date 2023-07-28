@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todoapp/Screen/widget/appbar.dart';
 import 'package:todoapp/bloc/todo_bloc.dart';
 import 'package:todoapp/helper/utils.dart';
 import 'package:todoapp/model/todoModel.dart';
@@ -31,7 +32,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customappbar(),
+        appBar: const Customappbar(),
         floatingActionButton: FloatingActionButton(
           onPressed: formdialog,
           child: const Icon(Icons.add),
@@ -51,7 +52,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               const SizedBox(height: 12),
               SearchBar(
-                elevation: MaterialStateProperty.all(0),
+                elevation: MaterialStateProperty.all(2),
                 controller: searchController,
                 hintText: "Search",
                 onChanged: (value) {
@@ -60,97 +61,133 @@ class _HomePageState extends State<HomePage> {
                       .add(SearchEvent(searchkeyword: value));
                 },
               ),
+              const SizedBox(height: 12),
               Expanded(
                 child: items.isEmpty
                     ? const Center(child: Text("Empty"))
-                    : ListView.separated(
-                        separatorBuilder: (_, index) => const Divider(),
+                    : GridView.builder(
                         itemCount: items.length,
                         itemBuilder: (_, index) {
                           final int key = state.dataBox!.keyAt(index);
                           final DataModel data = items[index];
                           return Card(
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
+                              borderRadius: BorderRadius.circular(8.0),
                             ),
-                            color: data.complete ? Colors.green : Colors.white,
-                            child: ListTile(
-                              isThreeLine: true,
-                              title: Text(
-                                data.title,
-                                style: const TextStyle(
-                                    fontSize: 16, color: Colors.black),
-                              ),
-                              subtitle: Column(
+                            color: data.complete
+                                ? const Color.fromARGB(255, 25, 69, 26)
+                                : null,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "${index + 1}.",
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              data.title,
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      PopupMenuButton<String>(
+                                        onSelected: (value) {
+                                          if (value.compareTo("Edit") == 0) {
+                                            titleController.text = data.title;
+                                            descriptionController.text =
+                                                data.description;
+                                            formdialog(key: key);
+                                          } else if (value
+                                                  .compareTo("Delete") ==
+                                              0) {
+                                            context
+                                                .read<TodoBloc>()
+                                                .add(DeleteTodoEvent(key: key));
+                                          } else if (value
+                                                  .compareTo("Completed") ==
+                                              0) {
+                                            DataModel updateddata = DataModel(
+                                                title: data.title,
+                                                description: data.description,
+                                                complete: true,
+                                                createdate: data.createdate,
+                                                duedate: data.duedate,
+                                                priority: data.priority);
+                                            context.read<TodoBloc>().add(
+                                                UpdateTodoEvent(
+                                                    key: key,
+                                                    updateddata: updateddata));
+                                          } else if (value
+                                                  .compareTo('Set Reminder') ==
+                                              0) {
+                                            context.read<TodoBloc>().add(
+                                                SetReminderEvent(
+                                                    key: key,
+                                                    data: data,
+                                                    context: context));
+                                          }
+                                        },
+                                        itemBuilder: (BuildContext context) {
+                                          return [
+                                            "Edit",
+                                            "Delete",
+                                            "Completed",
+                                            "Set Reminder"
+                                          ].map((option) {
+                                            return PopupMenuItem(
+                                              value: option,
+                                              child: Text(option),
+                                            );
+                                          }).toList();
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                   Text(data.description,
                                       style: const TextStyle(
-                                          fontSize: 15, color: Colors.black38)),
-                                  Text(
-                                      "Due Date : ${Utils.dateformat(data.duedate)}",
-                                      style: const TextStyle(
-                                          fontSize: 14, color: Colors.black38)),
-                                  Text("Priority Level : ${data.priority}",
-                                      style: const TextStyle(
-                                          fontSize: 14, color: Colors.black38)),
+                                        fontSize: 15,
+                                      )),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          "Due Date : ${Utils.dateformat(data.duedate)}",
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                          )),
+                                      Text("Priority Level : ${data.priority}",
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                          )),
+                                    ],
+                                  )
                                 ],
-                              ),
-                              leading: Text(
-                                "${index + 1}.",
-                                style: const TextStyle(
-                                    fontSize: 18, color: Colors.black),
-                              ),
-                              trailing: PopupMenuButton<String>(
-                                onSelected: (value) {
-                                  if (value.compareTo("Edit") == 0) {
-                                    titleController.text = data.title;
-                                    descriptionController.text =
-                                        data.description;
-                                    formdialog(key: key);
-                                  } else if (value.compareTo("Delete") == 0) {
-                                    context
-                                        .read<TodoBloc>()
-                                        .add(DeleteTodoEvent(key: key));
-                                  } else if (value.compareTo("Completed") ==
-                                      0) {
-                                    DataModel updateddata = DataModel(
-                                        title: data.title,
-                                        description: data.description,
-                                        complete: true,
-                                        createdate: data.createdate,
-                                        duedate: data.duedate,
-                                        priority: data.priority);
-                                    context.read<TodoBloc>().add(
-                                        UpdateTodoEvent(
-                                            key: key,
-                                            updateddata: updateddata));
-                                  } else if (value.compareTo('Set Reminder') ==
-                                      0) {
-                                    context.read<TodoBloc>().add(
-                                        SetReminderEvent(
-                                            key: key,
-                                            data: data,
-                                            context: context));
-                                  }
-                                },
-                                itemBuilder: (BuildContext context) {
-                                  return [
-                                    "Edit",
-                                    "Delete",
-                                    "Completed",
-                                    "Set Reminder"
-                                  ].map((option) {
-                                    return PopupMenuItem(
-                                      value: option,
-                                      child: Text(option),
-                                    );
-                                  }).toList();
-                                },
                               ),
                             ),
                           );
                         },
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2),
                       ),
               ),
             ],
@@ -163,7 +200,6 @@ class _HomePageState extends State<HomePage> {
   formdialog({int? key}) {
     showDialog(
         builder: (context) => Dialog(
-            backgroundColor: Colors.blueGrey[100],
             child: Container(
                 padding: const EdgeInsets.all(16),
                 child: BlocBuilder<TodoBloc, TodoInitial>(
@@ -211,9 +247,7 @@ class _HomePageState extends State<HomePage> {
                                     },
                                     child: Container(
                                       decoration: const BoxDecoration(
-                                          border: Border(
-                                              bottom: BorderSide(
-                                                  color: Colors.black))),
+                                          border: Border(bottom: BorderSide())),
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 12),
                                       child: Text(state.selecteddate == null
@@ -302,80 +336,5 @@ class _HomePageState extends State<HomePage> {
                   },
                 ))),
         context: context);
-  }
-
-  List sortingchoice = [
-    "due date:from newsest",
-    "due date:from oldest",
-    "priority:Low",
-    "priority:High",
-    "Creation date:from newsest",
-    "Creation date:from oldest",
-  ];
-  AppBar customappbar() {
-    List<Map<String, dynamic>> list =
-        List.generate(sortingchoice.length, (index) {
-      return {"key": sortingchoice[index], "index": index};
-    });
-    return AppBar(
-      automaticallyImplyLeading: false,
-      title: const Text("TODO App"),
-      actions: <Widget>[
-        TextButton(
-            onPressed: () {
-              showDialog(
-                  builder: (context) => AlertDialog(
-                        contentPadding: EdgeInsets.zero,
-                        backgroundColor: const Color.fromRGBO(207, 216, 220, 1),
-                        title: const Text("Sort by"),
-                        content: Container(
-                          padding: const EdgeInsets.all(16),
-                          child: BlocBuilder<TodoBloc, TodoState>(
-                            builder: (context, state) {
-                              if (kDebugMode) print(state.selectedSorting);
-                              return Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: list
-                                      .map((e) => RadioListTile(
-                                            title: Text(e['key'].toString()),
-                                            value: e['index'] as int,
-                                            groupValue:
-                                                state.selectedSorting ?? 0,
-                                            onChanged: (value) {
-                                              context.read<TodoBloc>().add(
-                                                    SetSelectedSortingEvent(
-                                                      index: e['index'] as int,
-                                                    ),
-                                                  );
-                                            },
-                                          ))
-                                      .toList());
-                            },
-                          ),
-                        ),
-                        actions: [
-                          TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text("CANCEL")),
-                          TextButton(
-                              onPressed: () {
-                                context
-                                    .read<TodoBloc>()
-                                    .add(SortListBySectedType());
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text("SORT"))
-                        ],
-                      ),
-                  context: context);
-            },
-            child: const Text(
-              "SORT",
-              style: TextStyle(color: Colors.white),
-            ))
-      ],
-    );
   }
 }
