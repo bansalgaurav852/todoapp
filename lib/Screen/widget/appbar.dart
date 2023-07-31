@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todoapp/bloc/todo_bloc.dart';
 
 List sortingchoice = [
-  "due date:from newsest",
-  "due date:from oldest",
-  "priority:Low",
-  "priority:High",
-  "Creation date:from newsest",
-  "Creation date:from oldest",
+  "Due Date:From Newsest",
+  "Due Date:From Oldest",
+  "Priority:Low",
+  "Priority:High",
+  "Creation Date:From Newsest",
+  "Creation Date:From Oldest",
 ];
 List<Map<String, dynamic>> list = List.generate(sortingchoice.length, (index) {
   return {"key": sortingchoice[index], "index": index};
@@ -35,23 +35,26 @@ class Customappbar extends StatelessWidget implements PreferredSizeWidget {
                           child: BlocBuilder<TodoBloc, TodoState>(
                             builder: (context, state) {
                               if (kDebugMode) print(state.selectedSorting);
-                              return Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: list
-                                      .map((e) => RadioListTile(
-                                            title: Text(e['key'].toString()),
-                                            value: e['index'] as int,
-                                            groupValue:
-                                                state.selectedSorting ?? 0,
-                                            onChanged: (value) {
-                                              context.read<TodoBloc>().add(
-                                                    SetSelectedSortingEvent(
-                                                      index: e['index'] as int,
-                                                    ),
-                                                  );
-                                            },
-                                          ))
-                                      .toList());
+                              return SingleChildScrollView(
+                                child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: list
+                                        .map((e) => RadioListTile(
+                                              title: Text(e['key'].toString()),
+                                              value: e['index'] as int,
+                                              groupValue:
+                                                  state.selectedSorting ?? 0,
+                                              onChanged: (value) {
+                                                context.read<TodoBloc>().add(
+                                                      SetSelectedSortingEvent(
+                                                        index:
+                                                            e['index'] as int,
+                                                      ),
+                                                    );
+                                              },
+                                            ))
+                                        .toList()),
+                              );
                             },
                           ),
                         ),

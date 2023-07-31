@@ -170,11 +170,11 @@ class _HomePageState extends State<HomePage> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                          "Due Date : ${Utils.dateformat(data.duedate)}",
+                                          "Date : ${Utils.dateformat(data.duedate)}",
                                           style: const TextStyle(
                                             fontSize: 14,
                                           )),
-                                      Text("Priority Level : ${data.priority}",
+                                      Text("Priority  : ${data.priority}",
                                           style: const TextStyle(
                                             fontSize: 14,
                                           )),
