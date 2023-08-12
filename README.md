@@ -1,22 +1,41 @@
-# todoapp
+<h1 align="center" id="title">Todo App</h1>
 
-A new Flutter project.
+<p align="center"><img src="https://socialify.git.ci/bansalgaurav852/todoapp/image?description=1&amp;language=1&amp;name=1&amp;owner=1&amp;stargazers=1&amp;theme=Light" alt="project-image"></p>
 
-## Getting Started
+<h2>Project Screenshots:</h2>
 
-This project is a starting point for a Flutter application.
+<img src="https://drive.google.com/uc?export=view&id=1Vl3bynrRNmgIMF8ZdrqM_NsqFPbQDXnw" alt="project-screenshot" width="144" height="320">
+<img src="https://drive.google.com/uc?export=view&id=18DQtETgxXhcFani6fPu3FumdS4hiAWWn" alt="project-screenshot" width="144" height="320">
+<img src="https://drive.google.com/uc?export=view&id=1sCX7-ww6bRuyaoeecbWj0PvkGB69DXTE" alt="project-screenshot" width="144" height="320">
+<img src="https://drive.google.com/uc?export=view&id=1LMPkweEXtbRIUBh7Ahd5SPgCSK_I-r6u" alt="project-screenshot" width="144" height="320">
+<img src="https://drive.google.com/uc?export=view&id=1OqPHUM9ZYEbVeBLN8B6NOHzxk-FCLFR2" alt="project-screenshot" width="144" height="320">
 
-A few resources to get you started if this is your first Flutter project:
+<h2>🧐 Features</h2>
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Here're some of the project's best features:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Bloc Pattern
+- Local Notification
+- Hive Database
+- Dark Theme
+- Search and sorting
 
-run below command to generate or update todoModel.g.dart after doing changes in todoModel.dart
+<h2>🛠️ Installation Steps:</h2>
+
+<p>1. Clone Repo</p>
+
+```
+git clone https://github.com/bansalgaurav852/todoapp.git
+```
+
+<p>2. install dependencies</p>
 
 ```dart
-flutter packages pub run build_runner build
+Flutter pub get
+```
+
+<p>3. Run App</p>
+
+```dart
+Flutter run
 ```
