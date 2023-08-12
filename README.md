@@ -3,13 +3,13 @@
 <p align="center"><img src="https://socialify.git.ci/bansalgaurav852/todoapp/image?description=1&amp;language=1&amp;name=1&amp;owner=1&amp;stargazers=1&amp;theme=Light" alt="project-image"></p>
 
 <h2>Project Screenshots:</h2>
-
+<p>
 <img src="/preview/todo1.png" alt="project-screenshot" width="144" height="320">
 <img src="/preview/todo2.png" alt="project-screenshot" width="144" height="320">
 <img src="/preview/todo3.png" alt="project-screenshot" width="144" height="320">
 <img src="/preview/todo4.png" alt="project-screenshot" width="144" height="320">
 <img src="/preview/todo5.png" alt="project-screenshot" width="144" height="320">
-
+</p>
 <h2>🧐 Features</h2>
 
 Here're some of the project's best features:
