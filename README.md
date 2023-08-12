@@ -4,11 +4,11 @@
 
 <h2>Project Screenshots:</h2>
 
-<img src="https://drive.google.com/uc?export=view&id=1Vl3bynrRNmgIMF8ZdrqM_NsqFPbQDXnw" alt="project-screenshot" width="144" height="320">
-<img src="https://drive.google.com/uc?export=view&id=18DQtETgxXhcFani6fPu3FumdS4hiAWWn" alt="project-screenshot" width="144" height="320">
-<img src="https://drive.google.com/uc?export=view&id=1sCX7-ww6bRuyaoeecbWj0PvkGB69DXTE" alt="project-screenshot" width="144" height="320">
-<img src="https://drive.google.com/uc?export=view&id=1LMPkweEXtbRIUBh7Ahd5SPgCSK_I-r6u" alt="project-screenshot" width="144" height="320">
-<img src="https://drive.google.com/uc?export=view&id=1OqPHUM9ZYEbVeBLN8B6NOHzxk-FCLFR2" alt="project-screenshot" width="144" height="320">
+<img src="/preview/todo1.png" alt="project-screenshot" width="144" height="320">
+<img src="/preview/todo2.png" alt="project-screenshot" width="144" height="320">
+<img src="/preview/todo3.png" alt="project-screenshot" width="144" height="320">
+<img src="/preview/todo4.png" alt="project-screenshot" width="144" height="320">
+<img src="/preview/todo5.png" alt="project-screenshot" width="144" height="320">
 
 <h2>🧐 Features</h2>
 
