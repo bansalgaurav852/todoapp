@@ -17,14 +17,14 @@ abstract class TodoState {
 }
 
 class TodoInitial extends TodoState {
-  TodoInitial({
+  const TodoInitial({
     required this.datalist,
     this.dataBox,
     this.selecteddate,
     this.priority,
     this.selectedSorting,
   }) : super(
-            datalist: [],
+            datalist: const [],
             dataBox: null,
             selecteddate: null,
             priority: null,

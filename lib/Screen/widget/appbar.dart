@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todoapp/bloc/todo_bloc.dart';
 
-List sortingchoice = [
+const List sortingchoice = [
   "Due Date:From Newsest",
   "Due Date:From Oldest",
   "Priority:Low",
